@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+	  <Nullable>enable</Nullable>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <!-- Mantenemos la supresión de alertas de documentación y vulnerabilidad temporal de Automapper -->
+	  <NoWarn>$(NoWarn);1591;NU1903</NoWarn>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<!-- Core y Herramientas de Entity Framework Core (Alineados con Pomelo 9) -->
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+
+		
+		<!-- MediatR & Pipeline Handler Components -->
+		<PackageReference Include="MediatR" Version="12.4.1" />
+
+		<!-- FluentValidation -->
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+
+		<!-- AutoMapper -->
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+
+		<!-- Core JSON Utilities -->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+
+		<!-- OpenAPI, Swagger & Scalar UI Layouts (Versiones Estables Compatibles) -->
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+		<PackageReference Include="Microsoft.OpenApi" Version="1.6.17" />
+		<!-- Fuerza la existencia de Microsoft.OpenApi.Models -->
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.6.2" />
+		<PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0" />
+		<PackageReference Include="Scalar.AspNetCore" Version="2.0.14" />
+		<PackageReference Include="WilderMinds.SwaggerHierarchySupport" Version="1.0.2" />
+
+		<!-- Logging Pipeline Architecture (Serilog) -->
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+		<PackageReference Include="Refit" Version="10.0.1" />
+		<PackageReference Include="Refit.HttpClientFactory" Version="10.0.1" />
+		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.6.100" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Mappings\" />
+    <Folder Include="Infrastructure\http\" />
+    <Folder Include="temp\" />
+  </ItemGroup>
+
+</Project>

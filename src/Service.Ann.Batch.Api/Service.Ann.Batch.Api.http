@@ -1,0 +1,6 @@
+@Service.Ann.Batch.Api_HostAddress = http://localhost:5076
+
+GET {{Service.Ann.Batch.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
