@@ -9,11 +9,11 @@ using Service.Ann.Batch.Api.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Service.Ann.Batch.Api.Infrastructure.Persistence.Migrations
+namespace Service.Ann.Batch.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260520180221_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260609143529_AddSettingEntity")]
+    partial class AddSettingEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,17 +32,37 @@ namespace Service.Ann.Batch.Api.Infrastructure.Persistence.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("id");
 
+                    b.Property<string>("AddressName")
+                        .HasColumnType("longtext")
+                        .HasColumnName("address_name");
+
+                    b.Property<decimal?>("BalanceDue")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("balance_due");
+
                     b.Property<DateTime>("BatchDate")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("batch_date");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("BookDate")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("book_date");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
+
+                    b.Property<string>("CustomerTrackingNumber")
+                        .HasColumnType("longtext")
+                        .HasColumnName("customer_tracking_number");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("deleted_at");
+
+                    b.Property<DateTime?>("DeliveryDate")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("delivery_date");
 
                     b.Property<string>("Files")
                         .HasMaxLength(1255)
@@ -69,6 +89,10 @@ namespace Service.Ann.Batch.Api.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("item");
 
+                    b.Property<string>("LineStatus")
+                        .HasColumnType("longtext")
+                        .HasColumnName("line_status");
+
                     b.Property<string>("Magento")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -78,6 +102,14 @@ namespace Service.Ann.Batch.Api.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("modified_at");
+
+                    b.Property<decimal?>("OrderTotal")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("order_total");
+
+                    b.Property<decimal?>("Payments")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("payments");
 
                     b.Property<string>("Po")
                         .IsRequired()
@@ -101,6 +133,14 @@ namespace Service.Ann.Batch.Api.Infrastructure.Persistence.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("ship_address");
 
+                    b.Property<string>("ShipAddress2")
+                        .HasColumnType("longtext")
+                        .HasColumnName("ship_address2");
+
+                    b.Property<string>("ShipAddress3")
+                        .HasColumnType("longtext")
+                        .HasColumnName("ship_address3");
+
                     b.Property<string>("ShipCity")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
@@ -110,6 +150,10 @@ namespace Service.Ann.Batch.Api.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)")
                         .HasColumnName("ship_code");
+
+                    b.Property<DateTime?>("ShipDate")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("ship_date");
 
                     b.Property<string>("ShipMethod")
                         .HasMaxLength(100)
@@ -157,6 +201,50 @@ namespace Service.Ann.Batch.Api.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("batch_entity", (string)null);
+                });
+
+            modelBuilder.Entity("SettingEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConfigKey")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("config_key");
+
+                    b.Property<string>("ConfigValue")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("config_value");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("modified_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConfigKey")
+                        .IsUnique();
+
+                    b.ToTable("setting_entity", (string)null);
                 });
 #pragma warning restore 612, 618
         }

@@ -24,6 +24,7 @@ public class BatchConfiguration : IEntityTypeConfiguration<BatchEntity>
         builder.Property(x => x.Uuid).HasMaxLength(255);
         builder.Property(x => x.ShipTracking).HasMaxLength(255);
         builder.Property(x => x.ShipMethod).HasMaxLength(100);
+        builder.Property(x => x.ShipDate);
         builder.Property(x => x.ShipAddress).HasMaxLength(255);
         builder.Property(x => x.ShipCity).HasMaxLength(255);
         builder.Property(x => x.ShipState).HasMaxLength(255);

@@ -93,6 +93,8 @@ public class GetBatchesResponse
 
     public string? ShipTracking { get; set; }
     public string? ShipMethod { get; set; }
+    public DateTime? ShipDate { get; set; }
+
 
     public string? Files { get; set; }
     public DateTime? FilesDate { get; set; }

@@ -11,6 +11,8 @@
 
 	<ItemGroup>
 		<!-- Core y Herramientas de Entity Framework Core (Alineados con Pomelo 9) -->
+		<PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
@@ -42,6 +44,8 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.6.2" />
 		<PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0" />
 		<PackageReference Include="Scalar.AspNetCore" Version="2.0.14" />
+		<PackageReference Include="System.Data.OleDb" Version="11.0.0-preview.4.26230.115" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.21.0" />
 		<PackageReference Include="WilderMinds.SwaggerHierarchySupport" Version="1.0.2" />
 
 		<!-- Logging Pipeline Architecture (Serilog) -->
@@ -57,6 +61,7 @@
   <ItemGroup>
     <Folder Include="Application\Mappings\" />
     <Folder Include="Infrastructure\http\" />
+    <Folder Include="Infrastructure\Services\" />
     <Folder Include="temp\" />
   </ItemGroup>
 

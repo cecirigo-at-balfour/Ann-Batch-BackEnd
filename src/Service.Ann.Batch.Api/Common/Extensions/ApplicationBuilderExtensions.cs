@@ -20,7 +20,7 @@ public static class ApplicationBuilderExtensions
         });
 
         app.MapScalarApiReference(options => {
-            options.WithTitle("Service.As400.Data.Api")
+            options.WithTitle("Service.Ann.Batch.Api")
             .WithTheme(ScalarTheme.Mars)
             .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.Http);
             options.Layout = ScalarLayout.Modern;

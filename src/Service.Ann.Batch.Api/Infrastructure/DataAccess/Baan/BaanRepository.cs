@@ -46,6 +46,7 @@ public sealed class BaanRepository : IBaanRepository
                 WHERE T$FONO = :fo AND ROWNUM = 1";
 
             cmd.Parameters.Add(":fo", OracleDbType.Varchar2).Value = fo;
+            Console.WriteLine(fo);
 
             using var reader = cmd.ExecuteReader();
 

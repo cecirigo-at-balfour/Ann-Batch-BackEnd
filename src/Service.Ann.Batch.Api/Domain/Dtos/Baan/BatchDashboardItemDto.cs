@@ -1,7 +1,9 @@
-﻿namespace Service.Ann.Batch.Api.Domain.Entities;
+﻿namespace Service.Ann.Batch.Api.Domain.Dtos.Baan;
 
-public class BatchEntity : GenericAuditEntity
+
+public class BatchDashboardItemDto
 {
+    public Guid Id { get; set; }
     public DateTime BatchDate { get; set; }
 
     public string Fo { get; set; } = "";
@@ -51,3 +53,5 @@ public class BatchEntity : GenericAuditEntity
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
 }
+
+

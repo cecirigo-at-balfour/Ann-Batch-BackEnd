@@ -12,11 +12,14 @@ public class AppDbContext : DbContext
 
     public AppDbContext(DbContextOptions<AppDbContext> options, ILoggerFactory loggerFactory) : base(options)
     {
-        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+       // ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking; se comento para que pueda actualizar la informacion
         _loggerFactory = loggerFactory;
     }
 
     public DbSet<BatchEntity> Batches => Set<BatchEntity>();
+    public DbSet<SettingEntity> Settings => Set<SettingEntity>();
+    public DbSet<UserEntity> Users => Set<UserEntity>();
+
 
     /// <summary>
     /// Automatically intercept tracks to intercept GenericAuditEntity changes before committing to MySQL.
@@ -47,6 +50,7 @@ public class AppDbContext : DbContext
     {
         // Explicitly apply individual mapping criteria overrides
         new BatchConfiguration().Configure(builder.Entity<BatchEntity>());
+        new SettingConfiguration().Configure(builder.Entity<SettingEntity>());
 
         base.OnModelCreating(builder);
 
