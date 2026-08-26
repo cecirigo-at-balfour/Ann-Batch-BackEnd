@@ -50,4 +50,5 @@ public class BatchEntity : GenericAuditEntity
     public DateTime? ModifiedAt { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
+    public virtual IEnumerable<Annfile>AnnFiles { get; set; }
 }

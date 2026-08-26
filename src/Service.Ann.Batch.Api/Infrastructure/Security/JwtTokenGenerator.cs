@@ -16,7 +16,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _jwtSettings = settings.Value;
     }
 
-    public string GenerateToken(UserEntity user)
+    public string GenerateToken(User user)
     {
 
         var claims = new List<Claim>

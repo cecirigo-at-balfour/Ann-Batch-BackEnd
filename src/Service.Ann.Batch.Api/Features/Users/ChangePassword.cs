@@ -10,7 +10,7 @@ namespace Service.Ann.Batch.Api.Features.Users;
 #region COMMAND
 
 public record ChangePasswordCommand(
-    int UserId,
+    Guid UserId,
     string CurrentPassword,
     string NewPassword
 ) : IRequest<bool>;
@@ -25,7 +25,8 @@ public class ChangePasswordValidator
     public ChangePasswordValidator()
     {
         RuleFor(x => x.UserId)
-            .GreaterThan(0);
+            .NotEqual(Guid.Empty)
+            .WithMessage("UserId must be a valid GUID.");
 
         RuleFor(x => x.CurrentPassword)
             .NotEmpty()
@@ -61,7 +62,7 @@ public class ChangePasswordController(IMediator mediator)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ChangePassword(
-        int userId,
+        Guid userId,
         [FromBody] ChangePasswordCommand command,
         CancellationToken ct)
     {

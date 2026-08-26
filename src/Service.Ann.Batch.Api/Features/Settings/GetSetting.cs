@@ -59,7 +59,7 @@ public class GetSettingHandler : IRequestHandler<GetSettingQuery, string?>
     {
         try
         {
-            var setting = await _context.Set<SettingEntity>()
+            var setting = await _context.Set<Setting>()
                .AsNoTracking()
                .FirstOrDefaultAsync(x => x.ConfigKey == request.ConfigKey, ct);
 

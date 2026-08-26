@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
@@ -10,7 +9,7 @@ namespace Service.Ann.Batch.Api.Features.Users;
 #region COMMAND
 
 public record UpdateUserCommand(
-    int Id,
+    Guid Id,
     string Username,
     string FullName,
     string Password,
@@ -26,7 +25,7 @@ public class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
     public UpdateUserValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0);
+            .NotEqual(Guid.Empty);
 
         RuleFor(x => x.Username)
             .NotEmpty()
@@ -36,11 +35,16 @@ public class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
             .NotEmpty()
             .MaximumLength(255);
 
-        RuleFor(x => x.Password).NotEmpty();
-
         RuleFor(x => x.Role)
             .NotEmpty()
             .MaximumLength(50);
+
+        When(x => !string.IsNullOrWhiteSpace(x.Password), () =>
+        {
+            RuleFor(x => x.Password)
+                .MinimumLength(8)
+                .WithMessage("Password must be at least 8 characters.");
+        });
     }
 }
 
@@ -61,7 +65,7 @@ public class UpdateUserController(IMediator mediator)
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(
-        int id,
+        Guid id,
         [FromBody] UpdateUserCommand command,
         CancellationToken ct)
     {
@@ -76,7 +80,6 @@ public class UpdateUserController(IMediator mediator)
 #endregion
 
 #region HANDLER
-
 public class UpdateUserHandler(
     AppDbContext context)
     : IRequestHandler<UpdateUserCommand, bool>
@@ -86,6 +89,7 @@ public class UpdateUserHandler(
         CancellationToken ct)
     {
         var user = await context.Users
+            .AsTracking()
             .FirstOrDefaultAsync(
                 x => x.Id == request.Id && !x.IsDeleted,
                 ct);
@@ -95,9 +99,15 @@ public class UpdateUserHandler(
 
         user.Username = request.Username;
         user.FullName = request.FullName;
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
         user.Role = request.Role;
         user.ModifiedAt = DateTime.UtcNow;
+
+        // Solo actualizar password si fue enviado
+        if (!string.IsNullOrWhiteSpace(request.Password))
+        {
+            user.PasswordHash =
+                BCrypt.Net.BCrypt.HashPassword(request.Password);
+        }
 
         await context.SaveChangesAsync(ct);
 

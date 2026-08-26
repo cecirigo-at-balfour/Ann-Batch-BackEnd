@@ -5,7 +5,9 @@ using global::Service.Ann.Batch.Api.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Service.Ann.Batch.Api.Domain.Dtos.As400;
+using Service.Ann.Batch.Api.Infrastructure.Configuration;
 using System.Text.Json;
 
 namespace Service.Ann.Batch.Api.Features.Batch;
@@ -69,10 +71,12 @@ public class GetBatchAs400Controller(IMediator mediator)
 public sealed class GetBatchAs400Handler(
     AppDbContext dbContext,
     IHttpClientFactory httpClientFactory,
-    ILogger<GetBatchAs400Handler> logger)
+    ILogger<GetBatchAs400Handler> logger,
+    IOptions<ApiSettings> apiSettings)
     : IRequestHandler<GetBatchAs400Command, SuccessResponse<string>>
 {
     private string _ApiKey = "gEIKqr1fWertQhg2Rm5LGzc3Qxl5uNoA_gEIKqr1fWertQhg2Rm5LGzc3Qxl5uNoA-SeG";
+    private readonly string _AS400BaseUrl = apiSettings.Value.AS400BaseUrl;
     public async Task<SuccessResponse<string>> Handle(
         GetBatchAs400Command request,
         CancellationToken ct)
@@ -88,7 +92,7 @@ public sealed class GetBatchAs400Handler(
         client.DefaultRequestHeaders.Add("x-api-key", _ApiKey);
 
         var response = await client.GetAsync(
-            $"https://localhost:7057/announcements/{request.Fo}",
+            $"{_AS400BaseUrl}/{request.Fo}",
             ct);
         Console.WriteLine(response);
         if (!response.IsSuccessStatusCode)

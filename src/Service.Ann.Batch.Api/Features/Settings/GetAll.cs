@@ -9,7 +9,7 @@ namespace Service.Ann.Batch.Api.Features.Settings;
 
 #region 1. QUERY
 
-public record GetAllSettingsQuery() : IRequest<List<SettingEntity>>;
+public record GetAllSettingsQuery() : IRequest<List<Setting>>;
 
 #endregion
 
@@ -28,7 +28,7 @@ public class GetAllSettingsValidator : AbstractValidator<GetAllSettingsQuery>
 
 #region 3. HANDLER
 
-public class GetAllSettingsHandler : IRequestHandler<GetAllSettingsQuery, List<SettingEntity>>
+public class GetAllSettingsHandler : IRequestHandler<GetAllSettingsQuery, List<Setting>>
 {
     private readonly AppDbContext _context;
 
@@ -37,7 +37,7 @@ public class GetAllSettingsHandler : IRequestHandler<GetAllSettingsQuery, List<S
         _context = context;
     }
 
-    public async Task<List<SettingEntity>> Handle(GetAllSettingsQuery request, CancellationToken cancellationToken)
+    public async Task<List<Setting>> Handle(GetAllSettingsQuery request, CancellationToken cancellationToken)
     {
         return await _context.Settings
             .OrderBy(x => x.ConfigKey)
@@ -65,7 +65,7 @@ public class GetAllSettingsController : ControllerBase
     /// Gets all system settings ordered by key
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(List<SettingEntity>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<Setting>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(CancellationToken ct)
     {
         var result = await _mediator.Send(new GetAllSettingsQuery(), ct);

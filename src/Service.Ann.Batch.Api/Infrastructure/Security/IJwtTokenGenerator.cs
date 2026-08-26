@@ -4,5 +4,5 @@ namespace Service.Ann.Batch.Api.Infrastructure.Security;
 
 public interface IJwtTokenGenerator
 {
-    string GenerateToken(UserEntity user);
+    string GenerateToken(User user);
 }

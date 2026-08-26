@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Service.Ann.Batch.Api.Domain.Entities;
 using Service.Ann.Batch.Api.Infrastructure.Configuration;
 using System.Text.RegularExpressions;
@@ -12,13 +11,14 @@ public class AppDbContext : DbContext
 
     public AppDbContext(DbContextOptions<AppDbContext> options, ILoggerFactory loggerFactory) : base(options)
     {
-       // ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking; se comento para que pueda actualizar la informacion
+       ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking; 
         _loggerFactory = loggerFactory;
     }
 
     public DbSet<BatchEntity> Batches => Set<BatchEntity>();
-    public DbSet<SettingEntity> Settings => Set<SettingEntity>();
-    public DbSet<UserEntity> Users => Set<UserEntity>();
+    public DbSet<Setting> Settings => Set<Setting>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Annfile> Annfiles => Set<Annfile>();
 
 
     /// <summary>
@@ -50,7 +50,10 @@ public class AppDbContext : DbContext
     {
         // Explicitly apply individual mapping criteria overrides
         new BatchConfiguration().Configure(builder.Entity<BatchEntity>());
-        new SettingConfiguration().Configure(builder.Entity<SettingEntity>());
+        new SettingConfiguration().Configure(builder.Entity<Setting>());
+        new UserConfiguration().Configure(builder.Entity<User>());
+        new AnnfileConfiguration().Configure(builder.Entity<Annfile>());
+
 
         base.OnModelCreating(builder);
 

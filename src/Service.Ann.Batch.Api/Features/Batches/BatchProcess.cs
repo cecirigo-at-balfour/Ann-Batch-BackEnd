@@ -8,9 +8,8 @@ using Service.Ann.Batch.Api.Domain.Dtos.Baan;
 using Service.Ann.Batch.Api.Domain.Entities;
 using Service.Ann.Batch.Api.Infrastructure.DataAccess.Baan;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Ann.Batch.Api.Features.Batch;
 
@@ -155,11 +154,12 @@ public sealed class ProcessBatchHandler(AppDbContext dbContext,IBaanRepository b
                     bearer,
                     ct);
 
-                var (files, date) = ResolveFiles(fo, item);
+                var (files, date, matches) = ResolveFiles(fo, item);
                 entity.Files = files;
                 entity.FilesDate = date;
 
                 await dbContext.Batches.AddAsync(entity, ct);
+                           
                 processed++;
             }
 
@@ -204,7 +204,7 @@ public sealed class ProcessBatchHandler(AppDbContext dbContext,IBaanRepository b
         }
     }
 
-    private (string files, DateTime?) ResolveFiles(string fo, string item)
+    private (string files, DateTime? date, IEnumerable<FileInfo> matches) ResolveFiles(string fo, string item)
     {
         string dir = _batchSettings.DefaultDirectory;
 
@@ -221,9 +221,10 @@ public sealed class ProcessBatchHandler(AppDbContext dbContext,IBaanRepository b
             .ToList();
 
         return (
-            string.Join("; ", matches.Select(f => f.Name)),
-            matches.FirstOrDefault()?.CreationTime
-        );
+             string.Join("; ", matches.Select(f => f.Name)),
+             matches.FirstOrDefault()?.CreationTime,
+             matches
+         );
     }
 
     #endregion

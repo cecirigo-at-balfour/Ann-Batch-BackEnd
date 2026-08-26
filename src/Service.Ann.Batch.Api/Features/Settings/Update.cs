@@ -17,7 +17,7 @@ namespace Service.Ann.Batch.Api.Features.Settings;
 /// <param name="ConfigKey" example="ApiUrl">Setting key</param>
 /// <param name="ConfigValue" example="https://api.test.com">Setting value</param>
 public record UpdateSettingCommand(
-    int Id,
+    Guid Id,
     string ConfigKey,
     string ConfigValue
 ) : IRequest<bool>;
@@ -54,7 +54,7 @@ public sealed class UpdateSettingMappingProfile : Profile
 {
     public UpdateSettingMappingProfile()
     {
-        CreateMap<UpdateSettingCommand, SettingEntity>()
+        CreateMap<UpdateSettingCommand, Setting>()
             .ForMember(dest => dest.Id, opt => opt.Ignore()); // Id no se mapea automáticamente
     }
 }
@@ -75,7 +75,7 @@ public class UpdateSettingController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(
-        [FromRoute] int id,
+        [FromRoute] Guid id,
         [FromBody] UpdateSettingCommand command,
         CancellationToken ct)
     {

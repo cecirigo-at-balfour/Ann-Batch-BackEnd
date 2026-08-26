@@ -2,8 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Service.Ann.Batch.Api.Application.Wrappers;
 using Service.Ann.Batch.Api.Features.Batch;
+using Service.Ann.Batch.Api.Infrastructure.Configuration;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
 using System.Text.Json;
 
@@ -45,10 +47,12 @@ public class GetBatchAs400BulkController(IMediator mediator)
 public sealed class GetBatchAs400BulkHandler(
     AppDbContext dbContext,
     IHttpClientFactory httpClientFactory,
-    ILogger<GetBatchAs400BulkHandler> logger)
+    ILogger<GetBatchAs400BulkHandler> logger,
+    IOptions<ApiSettings> apiSettings)
     : IRequestHandler<GetBatchAs400BulkCommand, SuccessResponse<string>>
 {
     private string _ApiKey = "gEIKqr1fWertQhg2Rm5LGzc3Qxl5uNoA_gEIKqr1fWertQhg2Rm5LGzc3Qxl5uNoA-SeG";
+    private readonly string _AS400BaseUrl = apiSettings.Value.AS400BaseUrl;
 
     public async Task<SuccessResponse<string>> Handle(
         GetBatchAs400BulkCommand request,
@@ -75,7 +79,7 @@ public sealed class GetBatchAs400BulkHandler(
                 }
 
                 var response = await client.GetAsync(
-                    $"https://localhost:7057/announcements/{fo}",
+                    $"{_AS400BaseUrl}/{fo}",
                     ct);
 
                 if (!response.IsSuccessStatusCode)

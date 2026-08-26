@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Service.Ann.Batch.Api.Application.Wrappers;
 using Service.Ann.Batch.Api.Domain.Dtos.As400;
+using Service.Ann.Batch.Api.Infrastructure.Configuration;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
 using System.Globalization;
 using System.Text.Json;
@@ -41,14 +43,17 @@ public class AnnouncementResponse
 public sealed class RefreshTrackingHandler(
     AppDbContext dbContext,
     IHttpClientFactory httpClientFactory,
-    ILogger<RefreshTrackingHandler> logger)
+    ILogger<RefreshTrackingHandler> logger,
+    IOptions<ApiSettings> apiSettings)
     : IRequestHandler<RefreshTrackingCommand, SuccessResponse<string>>
 {
+    private readonly string _AS400BaseUrl = apiSettings.Value.AS400BaseUrl;
     public async Task<SuccessResponse<string>> Handle(
         RefreshTrackingCommand request,
         CancellationToken ct)
     {
-        var batches = await dbContext.Batches
+       
+    var batches = await dbContext.Batches
     //   .Where(x => x.ShipTracking == null || x.ShipTracking == "")
   //  .Where(x => x.ShipDate == null)
       .ToListAsync(ct);
@@ -66,7 +71,7 @@ public sealed class RefreshTrackingHandler(
 
                 var httpRequest = new HttpRequestMessage(
                     HttpMethod.Get,
-                    $"https://localhost:7057/announcements/{batch.Fo}");
+                    $"{_AS400BaseUrl}/{batch.Fo}");
 
                 httpRequest.Headers.Add(
                     "x-api-key",

@@ -41,7 +41,7 @@ public sealed class DeleteSettingMappingProfile : Profile
 {
     public DeleteSettingMappingProfile()
     {
-        CreateMap<DeleteSettingCommand, SettingEntity>();
+        CreateMap<DeleteSettingCommand, Setting>();
     }
 }
 

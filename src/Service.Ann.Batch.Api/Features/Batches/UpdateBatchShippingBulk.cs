@@ -2,9 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Service.Ann.Batch.Api.Application.Wrappers;
 using Service.Ann.Batch.Api.Converters;
 using Service.Ann.Batch.Api.Domain.Dtos.As400;
+using Service.Ann.Batch.Api.Infrastructure.Configuration;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
 using System.Text.Json;
 
@@ -67,10 +69,12 @@ public class UpdateBatchShippingBulkController(IMediator mediator)
 public sealed class UpdateBatchShippingBulkHandler(
     AppDbContext dbContext,
     IHttpClientFactory httpClientFactory,
-    ILogger<UpdateBatchShippingBulkHandler> logger)
+    ILogger<UpdateBatchShippingBulkHandler> logger,
+    IOptions<ApiSettings> apiSettings)
     : IRequestHandler<UpdateBatchShippingBulkCommand, SuccessResponse<string>>
 {
     private const string ApiKey = "gEIKqr1fWertQhg2Rm5LGzc3Qxl5uNoA_gEIKqr1fWertQhg2Rm5LGzc3Qxl5uNoA-SeG";
+    private readonly string _AS400BaseUrl = apiSettings.Value.AS400BaseUrl;
 
     public async Task<SuccessResponse<string>> Handle(
         UpdateBatchShippingBulkCommand request,
@@ -99,7 +103,7 @@ public sealed class UpdateBatchShippingBulkHandler(
 
                 
                 var response = await client.GetAsync(
-                    $"https://localhost:7057/announcements/shipping-detail/{fo}",
+                    $"{_AS400BaseUrl}/shipping-detail/{fo}",
                     ct);
 
                 Console.WriteLine(response);

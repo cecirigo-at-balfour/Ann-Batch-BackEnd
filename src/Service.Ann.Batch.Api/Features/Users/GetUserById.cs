@@ -8,7 +8,7 @@ namespace Service.Ann.Batch.Api.Features.Users;
 
 #region QUERY
 
-public record GetUserByIdQuery(int Id)
+public record GetUserByIdQuery(Guid Id)
     : IRequest<UserDto>;
 
 #endregion
@@ -28,7 +28,7 @@ public class GetUserByIdController(IMediator mediator)
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get(
-        int id,
+        Guid id,
         CancellationToken ct)
     {
         var result = await mediator.Send(

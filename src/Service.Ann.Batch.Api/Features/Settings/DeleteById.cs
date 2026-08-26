@@ -14,7 +14,7 @@ namespace Service.Ann.Batch.Api.Features.Settings;
 /// <param name="Id" example="1">
 /// Setting Id to delete
 /// </param>
-public record DeleteSettingByIdCommand(int Id) : IRequest<bool>;
+public record DeleteSettingByIdCommand(Guid Id) : IRequest<bool>;
 
 #endregion
 
@@ -25,8 +25,8 @@ public class DeleteSettingByIdValidator : AbstractValidator<DeleteSettingByIdCom
     public DeleteSettingByIdValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0)
-            .WithMessage("Id must be greater than zero.");
+            .NotEqual(Guid.Empty)
+            .WithMessage("Id must be a valid GUID.");
     }
 }
 
@@ -49,7 +49,7 @@ public class DeleteSettingByIdController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(
-        [FromRoute] int id,
+        [FromRoute] Guid id,
         CancellationToken ct)
     {
         var result = await mediator.Send(new DeleteSettingByIdCommand(id), ct);

@@ -2,9 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Service.Ann.Batch.Api.Application.Wrappers;
 using Service.Ann.Batch.Api.Converters;
 using Service.Ann.Batch.Api.Domain.Dtos.As400;
+using Service.Ann.Batch.Api.Infrastructure.Configuration;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -72,10 +74,12 @@ public class GetBatchShippingController(IMediator mediator)
 public sealed class GetBatchShippingHandler(
     AppDbContext dbContext,
     IHttpClientFactory httpClientFactory,
-    ILogger<GetBatchShippingHandler> logger)
+    ILogger<GetBatchShippingHandler> logger,
+    IOptions<ApiSettings> apiSettings)
     : IRequestHandler<GetBatchShippingCommand, SuccessResponse<string>>
 {
     private string _ApiKey = "gEIKqr1fWertQhg2Rm5LGzc3Qxl5uNoA_gEIKqr1fWertQhg2Rm5LGzc3Qxl5uNoA-SeG";
+    private readonly string _AS400BaseUrl = apiSettings.Value.AS400BaseUrl;
     public async Task<SuccessResponse<string>> Handle(
         GetBatchShippingCommand request,
         CancellationToken ct)
@@ -91,7 +95,7 @@ public sealed class GetBatchShippingHandler(
         client.DefaultRequestHeaders.Add("x-api-key", _ApiKey);
 
         var response = await client.GetAsync(
-            $"https://localhost:7057/announcements/shipping-detail/{request.Fo}",
+            $"{_AS400BaseUrl}/shipping-detail/{request.Fo}",
             ct);
         Console.WriteLine(response);
         if (!response.IsSuccessStatusCode)

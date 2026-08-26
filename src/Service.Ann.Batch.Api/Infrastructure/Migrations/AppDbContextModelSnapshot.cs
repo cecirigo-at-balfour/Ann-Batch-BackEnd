@@ -8,7 +8,7 @@ using Service.Ann.Batch.Api.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Service.Ann.Batch.Api.Migrations
+namespace Service.Ann.Batch.Api.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -21,6 +21,36 @@ namespace Service.Ann.Batch.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("Service.Ann.Batch.Api.Domain.Entities.Annfile", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("BatchId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("batch_id");
+
+                    b.Property<string>("Fo")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("fo");
+
+                    b.Property<string>("PathToFile")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("path_to_file");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
+
+                    b.ToTable("annfile", (string)null);
+                });
 
             modelBuilder.Entity("Service.Ann.Batch.Api.Domain.Entities.BatchEntity", b =>
                 {
@@ -45,7 +75,7 @@ namespace Service.Ann.Batch.Api.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("book_date");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
@@ -200,14 +230,64 @@ namespace Service.Ann.Batch.Api.Migrations
                     b.ToTable("batch_entity", (string)null);
                 });
 
-            modelBuilder.Entity("SettingEntity", b =>
+            modelBuilder.Entity("Service.Ann.Batch.Api.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("char(36)")
                         .HasColumnName("id");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("full_name");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("modified_at");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("password_hash");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("role");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("username");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("user", (string)null);
+                });
+
+            modelBuilder.Entity("Setting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
 
                     b.Property<string>("ConfigKey")
                         .IsRequired()
@@ -241,7 +321,23 @@ namespace Service.Ann.Batch.Api.Migrations
                     b.HasIndex("ConfigKey")
                         .IsUnique();
 
-                    b.ToTable("setting_entity", (string)null);
+                    b.ToTable("setting", (string)null);
+                });
+
+            modelBuilder.Entity("Service.Ann.Batch.Api.Domain.Entities.Annfile", b =>
+                {
+                    b.HasOne("Service.Ann.Batch.Api.Domain.Entities.BatchEntity", "Batch")
+                        .WithMany("AnnFiles")
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Batch");
+                });
+
+            modelBuilder.Entity("Service.Ann.Batch.Api.Domain.Entities.BatchEntity", b =>
+                {
+                    b.Navigation("AnnFiles");
                 });
 #pragma warning restore 612, 618
         }

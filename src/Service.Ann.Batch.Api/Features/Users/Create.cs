@@ -64,14 +64,12 @@ public class CreateUserHandler(AppDbContext dbContext) : IRequestHandler<CreateU
 {
        public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken ct)
     {
-        var entity = new UserEntity
+        var entity = new User
         {
             Username = request.Username,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             FullName = request.FullName,
-            Role = request.Role,
-            CreatedAt = DateTime.UtcNow,
-            IsDeleted = false
+            Role = request.Role
         };
 
         dbContext.Users.Add(entity);

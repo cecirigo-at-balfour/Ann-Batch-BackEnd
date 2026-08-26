@@ -1,6 +1,7 @@
 ﻿
 
 using Service.Ann.Batch.Api.Application.Abstractions.AS400;
+using Service.Ann.Batch.Api.Domain.Dtos.As400;
 using Service.Ann.Batch.Api.Domain.Entities;
 using System.Data.OleDb;
 
@@ -19,6 +20,8 @@ public sealed class AnnouncementRepository : IAnnouncementRepository
     /// <summary>
     /// Fetches announcement records from AS400 based on status and date range.
     /// </summary>
+    /// 
+   
     public async Task<IReadOnlyList<Announcement>> GetAnnouncementsAsync(
         decimal startAs400,
         decimal endAs400,
@@ -303,4 +306,5 @@ public sealed class AnnouncementRepository : IAnnouncementRepository
             DeliveryDt = r.IsDBNull(r.GetOrdinal("Delivery_Dt")) ? 0 : Convert.ToDecimal(r.GetValue(r.GetOrdinal("Delivery_Dt")))
         };
     }
+      
 }

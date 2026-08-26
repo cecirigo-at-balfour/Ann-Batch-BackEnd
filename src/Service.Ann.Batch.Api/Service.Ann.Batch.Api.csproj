@@ -61,6 +61,8 @@
   <ItemGroup>
     <Folder Include="Application\Mappings\" />
     <Folder Include="Infrastructure\http\" />
+    <Folder Include="Infrastructure\Migrations\" />
+    <Folder Include="Infrastructure\Persistence\" />
     <Folder Include="Infrastructure\Services\" />
     <Folder Include="temp\" />
   </ItemGroup>

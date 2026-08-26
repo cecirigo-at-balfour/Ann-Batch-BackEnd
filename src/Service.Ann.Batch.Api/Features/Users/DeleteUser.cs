@@ -7,7 +7,7 @@ namespace Service.Ann.Batch.Api.Features.Users;
 
 #region COMMAND
 
-public record DeleteUserCommand(int Id)
+public record DeleteUserCommand(Guid Id)
     : IRequest<bool>;
 
 #endregion
@@ -27,7 +27,7 @@ public class DeleteUserController(IMediator mediator)
     [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(
-        int id,
+        Guid id,
         CancellationToken ct)
     {
         var result = await mediator.Send(
@@ -51,9 +51,10 @@ public class DeleteUserHandler(
         CancellationToken ct)
     {
         var user = await context.Users
-            .FirstOrDefaultAsync(
-                x => x.Id == request.Id && !x.IsDeleted,
-                ct);
+          .AsTracking()
+          .FirstOrDefaultAsync(
+              x => x.Id == request.Id && !x.IsDeleted,
+              ct);
 
         if (user == null)
             throw new Exception("User not found");

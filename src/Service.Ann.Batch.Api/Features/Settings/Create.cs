@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Service.Ann.Batch.Api.Domain.Entities;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
 
 namespace Service.Ann.Batch.Api.Features.Settings;
 
 #region 1. COMMAND
 
-public record CreateSettingCommand(string ConfigKey, string ConfigValue) : IRequest<int>;
+public record CreateSettingCommand(string ConfigKey, string ConfigValue) : IRequest<Guid>;
 
 #endregion
 
@@ -34,7 +33,7 @@ public class CreateSettingValidator : AbstractValidator<CreateSettingCommand>
 
 #region 3. HANDLER
 
-public class CreateSettingHandler : IRequestHandler<CreateSettingCommand, int>
+public class CreateSettingHandler : IRequestHandler<CreateSettingCommand, Guid>
 {
     private readonly AppDbContext _context;
 
@@ -43,9 +42,9 @@ public class CreateSettingHandler : IRequestHandler<CreateSettingCommand, int>
         _context = context;
     }
 
-    public async Task<int> Handle(CreateSettingCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CreateSettingCommand request, CancellationToken cancellationToken)
     {
-        var entity = new SettingEntity
+        var entity = new Setting
         {
             ConfigKey = request.ConfigKey,
             ConfigValue = request.ConfigValue
