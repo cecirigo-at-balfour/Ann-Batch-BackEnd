@@ -45,10 +45,6 @@ public class BatchEntity : GenericAuditEntity
     public decimal? Payments { get; set; }
     public decimal? BalanceDue { get; set; }
 
-    // Estos campos normalmente ya pueden estar en GenericAuditEntity
-    public DateTime? CreatedAt { get; set; }
-    public DateTime? ModifiedAt { get; set; }
-    public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
-    public virtual IEnumerable<Annfile>AnnFiles { get; set; }
+    
+  //  public virtual IEnumerable<Annfile>AnnFiles { get; set; }
 }

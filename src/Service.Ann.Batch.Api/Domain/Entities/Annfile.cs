@@ -9,6 +9,6 @@ public class Annfile : GenericAuditEntity
     public string Fo { get; set; } = string.Empty;
 
     // Navigation Property
-    public BatchEntity Batch { get; set; } = null!;
+ //   public BatchEntity Batch { get; set; } = null!;
 
 }

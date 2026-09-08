@@ -9,7 +9,6 @@ using Service.Ann.Batch.Api.Domain.Entities;
 using Service.Ann.Batch.Api.Infrastructure.DataAccess.Baan;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
 using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Service.Ann.Batch.Api.Features.Batch;
 

@@ -25,9 +25,9 @@ public class AnnfileConfiguration
             .HasMaxLength(10)
             .IsRequired();
 
-        builder.HasOne(x => x.Batch)
+     /*   builder.HasOne(x => x.Batch)
             .WithMany()
             .HasForeignKey(x => x.BatchId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade); */
     }
 }
