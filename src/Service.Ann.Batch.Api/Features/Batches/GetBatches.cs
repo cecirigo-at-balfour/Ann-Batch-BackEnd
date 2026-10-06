@@ -19,10 +19,8 @@ namespace Service.Ann.Batch.Api.Features.Batch;
 /// <param name="Status" example="SHIPPED">Filter by Status</param>
 /// <param name="Po" example="123456">Filter by Purchase Order</param>
 /// <param name="Fo" example="00012345">Filter by FO</param>
-/// <param name="ShipTracking" example="1Z999AA10123456784">Filter by tracking</param>
 /// <param name="ShipMethod" example="FEDEX">Filter by ship method</param>
 /// <param name="HasUuid" example="true">Has UUID (true/false)</param>
-/// <param name="Priority" example="HIGH">Filter by priority</param>
 /// <param name="HasFiles" example="true">Has files (true/false)</param>
 /// <param name="Item" example="GRETADLAB DGTL">Filter by item</param>
 public record GetBatchesQuery(
@@ -31,10 +29,10 @@ public record GetBatchesQuery(
     string? Status,
     string? Po,
     string? Fo,
-    string? ShipTracking,
+    string? Sr,
     string? ShipMethod,
     bool? HasUuid,
-    string? Priority,
+    bool? Srapproved,
     bool? HasFiles,
     string? Item
 ) : IRequest<SuccessResponse<List<GetBatchesResponse>>>;
@@ -86,6 +84,8 @@ public class GetBatchesResponse
     public string? StudentLastName { get; set; }
 
     public string Sr { get; set; } = "";
+    public bool? Srapproved { get; set; }
+    public DateTime? Srapprdate { get; set; }
     public string Magento { get; set; } = "";
     public string Po { get; set; } = "";
 
@@ -101,6 +101,7 @@ public class GetBatchesResponse
 
     public string? Priority { get; set; }
     public string? Status { get; set; }
+    public int? Quantity { get; set; }
 }
 
 #endregion
@@ -123,10 +124,10 @@ public class GetBatchesController(IMediator mediator) : ControllerBase
         [FromQuery] string? status,
         [FromQuery] string? po,
         [FromQuery] string? fo,
-        [FromQuery] string? shipTracking,
+        [FromQuery] string? sr,
         [FromQuery] string? shipMethod,
         [FromQuery] bool? hasUuid,
-        [FromQuery] string? priority,
+        [FromQuery] bool? srapproved,
         [FromQuery] bool? hasFiles,
         [FromQuery] string? item,
         CancellationToken ct)
@@ -138,10 +139,10 @@ public class GetBatchesController(IMediator mediator) : ControllerBase
                 status,
                 po,
                 fo,
-                shipTracking,
+                sr,
                 shipMethod,
                 hasUuid,
-                priority,
+                srapproved,
                 hasFiles,
                 item
             ), ct);
@@ -185,10 +186,10 @@ public sealed class GetBatchesHandler(
                 query = query.Where(x => x.Po == request.Po);
 
             if (!string.IsNullOrWhiteSpace(request.Fo))
-                query = query.Where(x => x.Fo == request.Fo);
+                query = query.Where(x => x.Fo.Contains(request.Fo));
 
-            if (!string.IsNullOrWhiteSpace(request.ShipTracking))
-                query = query.Where(x => x.ShipTracking == request.ShipTracking);
+            if (!string.IsNullOrWhiteSpace(request.Sr))
+                query = query.Where(x => x.Sr == request.Sr);
 
             if (!string.IsNullOrWhiteSpace(request.ShipMethod))
                 query = query.Where(x => x.ShipMethod == request.ShipMethod);
@@ -203,11 +204,11 @@ public sealed class GetBatchesHandler(
                     ? query.Where(x => !string.IsNullOrEmpty(x.Files))
                     : query.Where(x => string.IsNullOrEmpty(x.Files));
 
-            if (!string.IsNullOrWhiteSpace(request.Priority))
-                query = query.Where(x => x.Priority == request.Priority);
+            if (request.Srapproved.HasValue)
+                query = query.Where(x => x.Srapproved == request.Srapproved.Value);
 
             if (!string.IsNullOrWhiteSpace(request.Item))
-                query = query.Where(x => x.Item == request.Item);
+                query = query.Where(x => x.Item.Contains(request.Item));
 
             var data = await query
                 .OrderByDescending(x => x.BatchDate)

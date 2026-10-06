@@ -120,7 +120,14 @@ public sealed class GetBatchShippingHandler(
         var first = items.First();
 
         // ✅ Combinar múltiples items
-        entity.Item = string.Join(", ", items.Select(x => x.ItemCode));
+        var validItems = new[]
+        { "GRETADLAB","GPHOTO","GDGTL"};
+
+        entity.Item = string.Join(", ",
+            items
+                .Where(x => validItems.Any(v =>
+                    x.ItemCode.Contains(v, StringComparison.OrdinalIgnoreCase)))
+                .Select(x => x.ItemCode));
 
         // ✅ Tracking único (por si hay duplicados)
         entity.ShipTracking = items

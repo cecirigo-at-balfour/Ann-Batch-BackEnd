@@ -15,6 +15,7 @@ public class BatchSettings
     public string DefaultDirectory { get; set; } = "";
     public string AdLabDirectory { get; set; } = "";
     public string PersonalNoteDirectory { get; set; } = "";
+    public string ContAdLabDirectory { get; set; } = "";
 }
 
 public class PrintboxSettings

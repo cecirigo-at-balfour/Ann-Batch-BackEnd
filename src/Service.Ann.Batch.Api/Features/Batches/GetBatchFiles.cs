@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Service.Ann.Batch.Api.Application.Wrappers;
 using Service.Ann.Batch.Api.Common.Settings;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
+using Service.Ann.Batch.Api.Infrastructure.Services;
+using System.Text.Json;
 
 namespace Service.Ann.Batch.Api.Features.Batch;
 
@@ -54,7 +56,8 @@ public class GetBatchFilesController(IMediator mediator)
 
 public sealed class GetBatchFilesHandler(
     AppDbContext dbContext,
-    ILogger<GetBatchFilesHandler> logger)
+    ILogger<GetBatchFilesHandler> logger,
+    IFileResolverService fileResolverService)
     : IRequestHandler<GetBatchFilesCommand, SuccessResponse<string>>
 {
     private readonly BatchSettings _batchSettings =
@@ -65,17 +68,21 @@ public sealed class GetBatchFilesHandler(
         CancellationToken ct)
     {
         var entity = await dbContext.Batches
-            .FirstOrDefaultAsync(x => x.Fo == request.Fo, ct);
+           .FirstOrDefaultAsync(x => x.Fo == request.Fo, ct);
 
         if (entity is null)
             throw new Exception("FO not found");
 
-        var (files, date) = ResolveFiles(entity.Fo, entity.Item);
+        var (files, date) = fileResolverService.ResolveFiles(entity.Fo, entity.Item);
 
+        Console.WriteLine(files);
         entity.Files = files;
         entity.FilesDate = date;
 
-        await dbContext.SaveChangesAsync(ct);
+        dbContext.Batches.Update(entity);
+        var rows = await dbContext.SaveChangesAsync(ct);
+
+        Console.WriteLine($"Rows affected: {rows}");
 
         logger.LogInformation(
             "Files updated for FO {Fo}",
@@ -85,38 +92,7 @@ public sealed class GetBatchFilesHandler(
             "Success",
             "Files updated successfully");
     }
-
-    private (string files, DateTime?) ResolveFiles(
-        string fo,
-        string item)
-    {
-        string dir = _batchSettings.DefaultDirectory;
-
-        if (item.Equals(
-            "GRETADLAB DGTL",
-            StringComparison.OrdinalIgnoreCase))
-        {
-            dir = _batchSettings.AdLabDirectory;
-        }
-
-        if (item.Contains(
-            "PERSONAL",
-            StringComparison.OrdinalIgnoreCase))
-        {
-            dir = _batchSettings.PersonalNoteDirectory;
-        }
-
-        var matches = Directory.EnumerateFiles(dir)
-            .Where(f => Path.GetFileName(f).Contains(fo))
-            .Select(f => new FileInfo(f))
-            .OrderBy(f => f.CreationTime)
-            .ToList();
-
-        return (
-            string.Join("; ", matches.Select(f => f.Name)),
-            matches.FirstOrDefault()?.CreationTime
-        );
-    }
+       
 }
 
 #endregion

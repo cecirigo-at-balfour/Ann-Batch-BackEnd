@@ -65,6 +65,8 @@ public class GetBatchByIdResponse
     public string? StudentLastName { get; set; }
 
     public string Sr { get; set; } = "";
+    public bool? Srapproved { get; set; }
+    public DateTime? Srapprdate { get; set; }
     public string Magento { get; set; } = "";
     public string Po { get; set; } = "";
 
@@ -94,6 +96,7 @@ public class GetBatchByIdResponse
 
     public string? Priority { get; set; }
     public string? Status { get; set; }
+    public int? quantity { get; set; }
 }
 
 #endregion

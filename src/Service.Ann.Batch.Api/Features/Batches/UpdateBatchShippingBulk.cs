@@ -93,6 +93,7 @@ public sealed class UpdateBatchShippingBulkHandler(
             try
             {
                 var entity = await dbContext.Batches
+                    .AsTracking()
                     .FirstOrDefaultAsync(x => x.Fo == fo, ct);
 
                 if (entity is null)
@@ -134,7 +135,15 @@ public sealed class UpdateBatchShippingBulkHandler(
                 var items = result.Data;
                 var first = items.First();
 
-                entity.Item = string.Join(", ", items.Select(x => x.ItemCode));
+                var validItems = new[]
+                { "GRETADLAB","GPHOTO","GDGTL" };
+
+                entity.Item = string.Join(", ",
+                    items
+                        .Where(x => validItems.Any(v =>
+                            x.ItemCode.Contains(v, StringComparison.OrdinalIgnoreCase)))
+                        .Select(x => x.ItemCode));
+
                 entity.ShipTracking = items
                     .Select(x => x.TrackingNumber)
                     .Distinct()

@@ -70,6 +70,7 @@ public sealed class GetBatchAs400BulkHandler(
             try
             {
                 var entity = await dbContext.Batches
+                    .AsTracking()
                     .FirstOrDefaultAsync(x => x.Fo == fo, ct);
 
                 if (entity is null)
@@ -108,7 +109,10 @@ public sealed class GetBatchAs400BulkHandler(
                 entity.ShipMethod = result.Data.ShippingMthd;
                 entity.ShipDate = result.Data.ShippingDt;
 
-                entity.Status = result.Data.OrdStsDescription;
+                if (string.IsNullOrWhiteSpace(entity.Status))
+                {
+                    entity.Status = result.Data.OrdStsDescription;
+                }
                 entity.LineStatus = result.Data.LineStatusDescription;
 
                 entity.StudentName = result.Data.FirstName;

@@ -12,6 +12,7 @@
 	<ItemGroup>
 		<!-- Core y Herramientas de Entity Framework Core (Alineados con Pomelo 9) -->
 		<PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+		<PackageReference Include="Dapper" Version="2.1.89" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.2" />
@@ -63,7 +64,6 @@
     <Folder Include="Infrastructure\http\" />
     <Folder Include="Infrastructure\Migrations\" />
     <Folder Include="Infrastructure\Persistence\" />
-    <Folder Include="Infrastructure\Services\" />
     <Folder Include="temp\" />
   </ItemGroup>
 

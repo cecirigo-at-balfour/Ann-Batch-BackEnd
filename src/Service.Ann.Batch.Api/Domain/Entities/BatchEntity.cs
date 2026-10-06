@@ -11,6 +11,8 @@ public class BatchEntity : GenericAuditEntity
     public string? StudentLastName { get; set; }
 
     public string Sr { get; set; } = "";
+    public bool? Srapproved { get; set; }
+    public DateTime? Srapprdate { get; set; }
     public string Magento { get; set; } = "";
     public string Po { get; set; } = "";
     public string Uuid { get; set; } = "";
@@ -44,7 +46,7 @@ public class BatchEntity : GenericAuditEntity
     public decimal? OrderTotal { get; set; }
     public decimal? Payments { get; set; }
     public decimal? BalanceDue { get; set; }
+    public int? Quantity { get; set; }
 
-    
-  //  public virtual IEnumerable<Annfile>AnnFiles { get; set; }
+    //  public virtual IEnumerable<Annfile>AnnFiles { get; set; }
 }

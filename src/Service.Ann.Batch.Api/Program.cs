@@ -5,6 +5,7 @@ using Service.Ann.Batch.Api.Common.Extensions;
 using Service.Ann.Batch.Api.Common.Middleware;
 using Service.Ann.Batch.Api.Infrastructure.Configuration;
 using Service.Ann.Batch.Api.Infrastructure.Security;
+using Service.Ann.Batch.Api.Infrastructure.Services;
 using System.Text;
 
 
@@ -62,6 +63,8 @@ builder.Services
                             jwtSection["Key"]!))
             };
     });
+
+builder.Services.AddScoped<IFileResolverService, FileResolverService>();
 builder.Services.Configure<ApiSettings>(
 builder.Configuration.GetSection("ApiSettings"));
 

@@ -8,6 +8,7 @@ using Service.Ann.Batch.Api.Domain.Dtos.Baan;
 using Service.Ann.Batch.Api.Domain.Entities;
 using Service.Ann.Batch.Api.Infrastructure.DataAccess.Baan;
 using Service.Ann.Batch.Api.Infrastructure.Persistence;
+using Service.Ann.Batch.Api.Infrastructure.Services;
 using System.Text.RegularExpressions;
 
 namespace Service.Ann.Batch.Api.Features.Batch;
@@ -69,18 +70,7 @@ public class BatchResponse
 [Route("batch")]
 [Tags("Batch")]
 public class ProcessBatchController(IMediator mediator) : ControllerBase
-{
-    /// <summary>
-    /// Processes batch Ann
-    /// </summary>
-    /// <remarks> 
-    ///     Processes batch file (.txt) uploaded via form-data
-    /// Flow:
-    /// 1. Upload .txt file
-    /// 2. Parse lines
-    /// 3. Enrich with Baan + Printbox
-    /// 4. Persist into MySQL
-    /// </remarks>
+{    
     [HttpPost("process")]
     [ProducesResponseType(typeof(SuccessResponse<string>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Post(IFormFile file,[FromForm] DateTime batchDate,CancellationToken ct)
@@ -96,7 +86,7 @@ public class ProcessBatchController(IMediator mediator) : ControllerBase
 
 #region 5. HANDLER
 
-public sealed class ProcessBatchHandler(AppDbContext dbContext,IBaanRepository baanRepository,IPrintboxApi printboxApi,IMapper mapper,ILogger<ProcessBatchHandler> logger):IRequestHandler<ProcessBatchCommand, SuccessResponse<string>>
+public sealed class ProcessBatchHandler(AppDbContext dbContext,IBaanRepository baanRepository,IPrintboxApi printboxApi,IMapper mapper,ILogger<ProcessBatchHandler> logger, IFileResolverService fileResolverService) :IRequestHandler<ProcessBatchCommand, SuccessResponse<string>>
 {
     private readonly BatchSettings _batchSettings = AppSettingsAnn.AppSettings.BatchSettings;
     private readonly PrintboxSettings _printboxSettings = AppSettingsAnn.AppSettings.PrintboxSettings;
@@ -147,13 +137,15 @@ public sealed class ProcessBatchHandler(AppDbContext dbContext,IBaanRepository b
                 entity.StudentName = student;
                 entity.Item = item;
                 entity.BatchDate = request.BatchDate;
+                entity.BookDate = request.BatchDate;
+                entity.Status = "Backordered";
 
                 entity.Uuid = await ResolveUuidAsync(
                     entity.Magento,
                     bearer,
                     ct);
 
-                var (files, date, matches) = ResolveFiles(fo, item);
+                var (files, date) = fileResolverService.ResolveFiles(fo, item);
                 entity.Files = files;
                 entity.FilesDate = date;
 
@@ -203,30 +195,7 @@ public sealed class ProcessBatchHandler(AppDbContext dbContext,IBaanRepository b
         }
     }
 
-    private (string files, DateTime? date, IEnumerable<FileInfo> matches) ResolveFiles(string fo, string item)
-    {
-        string dir = _batchSettings.DefaultDirectory;
-
-        if (item.Equals("GRETADLAB DGTL", StringComparison.OrdinalIgnoreCase))
-            dir = _batchSettings.AdLabDirectory;
-
-        if (item.Contains("PERSONAL", StringComparison.OrdinalIgnoreCase))
-            dir = _batchSettings.PersonalNoteDirectory;
-
-        var matches = Directory.EnumerateFiles(dir)
-            .Where(f => Path.GetFileName(f).Contains(fo))
-            .Select(f => new FileInfo(f))
-            .OrderBy(f => f.CreationTime)
-            .ToList();
-
-        return (
-             string.Join("; ", matches.Select(f => f.Name)),
-             matches.FirstOrDefault()?.CreationTime,
-             matches
-         );
-    }
-
-    #endregion
+   #endregion
 }
 
 

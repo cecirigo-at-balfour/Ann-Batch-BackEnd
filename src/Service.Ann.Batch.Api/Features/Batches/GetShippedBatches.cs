@@ -114,7 +114,9 @@ public sealed class GetShippedBatchesHandler(
 
         var query = dbContext.Batches
             .AsNoTracking()
-            .Where(x => x.Status == "Shipped");
+            .Where(x =>
+                x.Status != null &&
+                x.Status.ToUpper() == "SHIPPED");
 
         if (!string.IsNullOrWhiteSpace(request.Fo))
         {

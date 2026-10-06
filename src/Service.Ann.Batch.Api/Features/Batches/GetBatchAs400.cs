@@ -112,9 +112,12 @@ public sealed class GetBatchAs400Handler(
 
         entity.ShipTracking = result.Data.ShipTrackingNum;
         entity.ShipMethod = result.Data.ShippingMthd;           
-        entity.ShipDate = result.Data.ShippingDt;    
+        entity.ShipDate = result.Data.ShippingDt;
+        if (string.IsNullOrWhiteSpace(entity.Status))
+            {
+            entity.Status = result.Data.OrdStsDescription;
+            }
 
-        entity.Status = result.Data.OrdStsDescription;
         entity.LineStatus = result.Data.LineStatusDescription;
 
         entity.StudentName = result.Data.FirstName;
