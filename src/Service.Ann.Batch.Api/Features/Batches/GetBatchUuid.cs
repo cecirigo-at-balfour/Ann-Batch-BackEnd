@@ -66,6 +66,7 @@ public sealed class GetBatchUuidHandler(
         CancellationToken ct)
     {
         var entity = await dbContext.Batches
+            .AsTracking()
             .FirstOrDefaultAsync(x => x.Fo == request.Fo, ct);
 
         if (entity is null)
@@ -86,6 +87,8 @@ public sealed class GetBatchUuidHandler(
             entity.Magento,
             bearer,
             ct);
+        Console.WriteLine(entity.Uuid);
+
 
         await dbContext.SaveChangesAsync(ct);
 
@@ -94,7 +97,7 @@ public sealed class GetBatchUuidHandler(
             request.Fo);
 
         return new SuccessResponse<string>(
-            "Success",
+            entity.Uuid,
             "UUID updated successfully");
     }
 

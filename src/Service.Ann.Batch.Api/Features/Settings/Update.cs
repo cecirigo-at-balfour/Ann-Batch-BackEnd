@@ -109,16 +109,23 @@ public class UpdateSettingHandler : IRequestHandler<UpdateSettingCommand, bool>
     public async Task<bool> Handle(UpdateSettingCommand request, CancellationToken ct)
     {
         var entity = await _context.Settings
+             .AsTracking()
             .FirstOrDefaultAsync(x => x.Id == request.Id, ct);
+        Console.WriteLine(entity.ConfigKey);
+        Console.WriteLine(entity.ConfigValue);
 
         if (entity == null)
             return false;
 
         // ✅ Mapping (actualiza valores)
-        _mapper.Map(request, entity);
+        entity.ConfigKey = request.ConfigKey;
+        entity.ConfigValue = request.ConfigValue;
 
-        await _context.SaveChangesAsync(ct);
+        Console.WriteLine(entity.ConfigKey);
+        Console.WriteLine(entity.ConfigValue);
 
+        var rows = await _context.SaveChangesAsync(ct);
+        Console.WriteLine($"Rows affected: {rows}");
         return true;
     }
 }

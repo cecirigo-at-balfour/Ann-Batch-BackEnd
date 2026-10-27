@@ -85,6 +85,7 @@ public sealed class GetBatchShippingHandler(
         CancellationToken ct)
     {
         var entity = await dbContext.Batches
+             .AsTracking()
             .FirstOrDefaultAsync(x => x.Fo == request.Fo, ct);
 
         if (entity is null)
