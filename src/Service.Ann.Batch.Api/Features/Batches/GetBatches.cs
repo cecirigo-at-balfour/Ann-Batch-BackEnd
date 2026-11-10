@@ -205,7 +205,11 @@ public sealed class GetBatchesHandler(
                     : query.Where(x => string.IsNullOrEmpty(x.Files));
 
             if (request.Srapproved.HasValue)
-                query = query.Where(x => x.Srapproved == request.Srapproved.Value);
+            {
+                query = request.Srapproved.Value
+                    ? query.Where(x => x.Srapproved == true)
+                    : query.Where(x => x.Srapproved != true);
+            }
 
             if (!string.IsNullOrWhiteSpace(request.Item))
                 query = query.Where(x => x.Item.Contains(request.Item));
